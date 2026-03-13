@@ -1,5 +1,12 @@
 # @e245703/pkg-a
 
+## 0.1.3
+
+### Patch Changes
+
+- b84858a: provenance を追加してみる
+- b84858a: access confi 必要か検証してみる g
+
 ## 0.1.2
 
 ### Patch Changes
