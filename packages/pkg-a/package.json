@@ -10,6 +10,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   }
 }
