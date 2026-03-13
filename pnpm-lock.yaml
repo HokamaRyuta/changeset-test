@@ -23,6 +23,12 @@ importers:
         specifier: workspace:*
         version: link:../pkg-a
 
+  packages/pkg-c:
+    dependencies:
+      '@e245703/pkg-b':
+        specifier: workspace:*
+        version: link:../pkg-b
+
 packages:
 
   '@babel/runtime@7.28.6':

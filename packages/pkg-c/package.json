@@ -1,0 +1,19 @@
+{
+  "name": "@e245703/pkg-c",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@e245703/pkg-b": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
