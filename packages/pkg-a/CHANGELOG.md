@@ -1,5 +1,11 @@
 # @e245703/pkg-a
 
+## 1.0.0
+
+### Major Changes
+
+- eade5f2: major bump
+
 ## 0.1.3
 
 ### Patch Changes
