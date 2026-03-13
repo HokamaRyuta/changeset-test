@@ -21,22 +21,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.20.0
-          registry-url: https://registry.npmjs.org
-
-      - name: Update npm
-        run: npm install -g npm@11.8.0
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.28.2
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.20.0
+          registry-url: https://registry.npmjs.org
+          cache: "pnpm"
+
+      - name: Update npm
+        run: npm install -g npm@11.8.0
+
       - name: Check npm version
         run: npm -v
+
+      - name: Check pnpm version
+        run: pnpm -v
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
