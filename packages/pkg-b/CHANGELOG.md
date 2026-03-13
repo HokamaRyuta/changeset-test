@@ -1,5 +1,13 @@
 # @e245703/pkg-b
 
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [b84858a]
+- Updated dependencies [b84858a]
+  - @e245703/pkg-a@0.1.3
+
 ## 1.0.0
 
 ### Major Changes
