@@ -33,6 +33,7 @@ jobs:
           registry-url: https://registry.npmjs.org
           cache: "pnpm"
 
+      # nodeからのnpmだとバージョンが古くてtrusted publisherが使えない
       - name: Update npm
         run: npm install -g npm@11.8.0
 
