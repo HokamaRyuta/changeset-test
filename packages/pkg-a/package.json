@@ -8,5 +8,8 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

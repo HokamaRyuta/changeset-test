@@ -11,5 +11,8 @@
   },
   "dependencies": {
     "@e245703/pkg-a": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
