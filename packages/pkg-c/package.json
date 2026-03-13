@@ -1,10 +1,10 @@
 {
   "name": "@e245703/pkg-c",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/HokamaRyuta/changeset-test.git",
-    "directory": "packages/pkg-c" 
+    "directory": "packages/pkg-c"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
