@@ -1,10 +1,10 @@
 {
   "name": "@e245703/pkg-b",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/HokamaRyuta/changeset-test.git",
-    "directory": "packages/pkg-b" 
+    "directory": "packages/pkg-b"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,7 +17,6 @@
   "dependencies": {
     "@e245703/pkg-a": "workspace:*"
   },
-  
   "publishConfig": {
     "access": "public"
   }

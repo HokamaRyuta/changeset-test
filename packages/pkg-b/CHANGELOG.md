@@ -1,5 +1,16 @@
 # @e245703/pkg-b
 
+## 2.0.0
+
+### Major Changes
+
+- eade5f2: major bump
+
+### Patch Changes
+
+- Updated dependencies [eade5f2]
+  - @e245703/pkg-a@1.0.0
+
 ## 1.0.1
 
 ### Patch Changes
