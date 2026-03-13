@@ -18,7 +18,6 @@
     "@e245703/pkg-b": "workspace:*"
   },
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   }
 }
