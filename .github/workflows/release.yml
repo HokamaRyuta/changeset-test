@@ -27,16 +27,13 @@ jobs:
           node-version: 20.20.0
           registry-url: https://registry.npmjs.org
 
-      - name: update npm
+      - name: Update npm
         run: npm install -g npm@11.8.0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.28.2
-
-      - name: Check pnpm version
-        run: pnpm -v
 
       - name: Check npm version
         run: npm -v
