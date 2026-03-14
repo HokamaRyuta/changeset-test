@@ -1,4 +1,5 @@
-name: Release
+name: publish packages
+run-name: Changesets Release
 
 on:
   push:
@@ -24,32 +25,35 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.28.2
+          version: 10.28.1
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20.20.0
           registry-url: https://registry.npmjs.org
-          cache: "pnpm"
 
-      # nodeからのnpmだとバージョンが古くてtrusted publisherが使えない
       - name: Update npm
         run: npm install -g npm@11.8.0
 
-      - name: Check npm version
-        run: npm -v
+      - name: List workspace packages
+        run: pnpm -r list --depth -1
 
-      - name: Check pnpm version
-        run: pnpm -v
+      - name: Show release plan
+        run: |
+          if ls .changeset/*.md 1> /dev/null 2>&1; then
+            echo "🦋 Release plan"
+            pnpm changeset status
+          fi
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build packages
         run: pnpm build
 
       - name: Changesets Release
+        id: changesets
         uses: changesets/action@v1
         with:
           version: pnpm changeset version
