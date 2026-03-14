@@ -1,5 +1,15 @@
 # @e245703/pkg-a
 
+## 1.1.0
+
+### Minor Changes
+
+- 46829fa: fugafuga
+
+### Patch Changes
+
+- ca7e145: PR と commit のメッセージ変えてみた
+
 ## 1.0.0
 
 ### Major Changes
