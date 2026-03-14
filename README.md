@@ -1,345 +1,402 @@
 # Development Guide
 
-このリポジトリは **pnpm workspace + Changesets** を利用した monorepo 構成です。
-Node / pnpm のバージョン管理には **Volta** を使用します。
-
-* macOS / Linux / Windows 対応
-* corepack は使用しません
+このリポジトリは pnpm workspace + Changesets を利用した monorepo 構成です。  
+Node / pnpm のバージョン管理には [Volta](https://volta.sh) を使用しています。
 
 ---
 
-# Table of Contents
+# 目次
 
-* [1. Environment Setup](#1-environment-setup)
-* [2. Volta Configuration](#2-volta-configuration)
-* [3. Node / pnpm Setup](#3-node--pnpm-setup)
-* [4. Install Dependencies](#4-install-dependencies)
-* [5. Workspace Structure](#5-workspace-structure)
-* [6. Development](#6-development)
-* [7. Dependency Management](#7-dependency-management)
-* [8. Versioning](#8-versioning)
-* [9. Release / Publish](#9-release--publish)
-* [10. 新規 Package の Publish](#10-新規-package-の-publish)
-* [11. なぜ Volta を使用するのか](#11-なぜ-volta-を使用するのか)
-* [12. Troubleshooting](#12-troubleshooting)
+* [1. 環境構築](#1-環境構築)
+
+  * [1.1 Volta のインストール](#11-volta-のインストール)
+  * [1.2 corepack の無効化](#12-corepack-の無効化)
+  * [1.3 Node / pnpm のインストール](#13-node--pnpm-のインストール)
+  * [1.4 Volta shim 確認](#14-volta-shim-確認)
+* [2. 依存関係のインストール](#2-依存関係のインストール)
+* [3. Workspace 構成](#3-workspace-構成)
+* [4. 開発フロー](#4-開発フロー)
+
+  * [4.1 build](#41-build)
+  * [4.2 clean](#42-clean)
+  * [4.3 依存関係の追加](#43-依存関係の追加)
+  * [4.4 Changeset の作成](#44-changeset-の作成)
+* [5. Release / Publish の仕組み](#5-release--publish-の仕組み)
+* [6. 新しい Package を追加する場合](#6-新しい-package-を追加する場合)
+* [7. 新しい Package の初回 Publish](#7-新しい-package-の初回-publish)
 
 ---
 
-# 1. Environment Setup
+# 1. 環境構築
 
-## Volta のインストール
+このリポジトリでは [Volta](https://volta.sh) を利用して Node / pnpm のバージョンを固定しています。
 
-### macOS / Linux
+Volta を使うことで
+
+* Node / pnpm バージョンの統一
+* ツールチェーンの自動切り替え
+
+が可能になります。
+
+## 1.1 Volta のインストール
+
+macOS / Linux
 
 ```bash
 curl https://get.volta.sh | bash
 ```
 
-### Windows (PowerShell)
+Windows
 
 ```powershell
-iwr https://get.volta.sh -UseBasicParsing | iex
+winget install Volta.Volta
 ```
 
-確認
+参考：  
+https://docs.volta.sh/guide/getting-started
 
-```bash
-volta --version
-```
+## 1.2 corepack の無効化
 
----
+このプロジェクトでは pnpm を Volta で管理します。
 
-# 2. Volta Configuration
-
-## PATH 設定
-
-Volta を利用するためには `VOLTA_HOME` を設定します。
-
-```bash
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
-```
-
-`.zshrc` / `.bashrc` などに追加してください。
-
----
-
-## corepack の無効化
-
-このプロジェクトでは pnpm を **Volta で管理**します。
-corepack が有効な場合、pnpm と競合する可能性があります。
+corepack が有効だと pnpm バージョンが競合する可能性があるため、無効化してください。
 
 ```bash
 corepack disable
 ```
 
-必要に応じて
+## 1.3 Node / pnpm のインストール
 
-```bash
-rm -rf ~/.local/share/corepack
+`package.json` で Node / pnpm バージョンを固定しています。
+
+```json
+"volta": {
+  "node": "20.20.0",
+  "pnpm": "10.28.1"
+}
 ```
 
----
-
-# 3. Node / pnpm Setup
-
-## Node
+以下を実行してください。
 
 ```bash
-volta install node@20
-volta pin node@20
+volta install node@20.20.0
+volta install pnpm@10.28.1
 ```
 
 確認
 
 ```bash
 node -v
-```
-
----
-
-## pnpm
-
-```bash
-volta install pnpm@9.1.0
-```
-
-確認
-
-```bash
 pnpm -v
 ```
 
----
-
-## Volta shim 確認（重要）
+## 1.4 Volta shim 確認
 
 macOS / Linux
 
 ```bash
+which node
 which pnpm
 ```
 
 Windows
 
 ```powershell
+where node
 where pnpm
 ```
 
 以下のようになっている必要があります。
 
 ```
+~/.volta/bin/node
 ~/.volta/bin/pnpm
 ```
 
----
+## PATH が正しく設定されていない場合
 
-## 環境確認
-
-```bash
-node -v
-pnpm -v
-volta list
-```
-
----
-
-# 4. Install Dependencies
-
-**必ずリポジトリの root で実行してください。**
-
-```bash
-pnpm install
-```
-
-pnpm workspace では package ディレクトリで `pnpm install` を実行すると
-依存関係が壊れる可能性があります。
-
----
-
-# 5. Workspace Structure
-
-このリポジトリは **pnpm workspace** で構成されています。
-
-```
-packages/
-  pkg-a
-  pkg-b
-  pkg-c
-```
-
-各ディレクトリは独立した npm package です。
-
----
-
-# 6. Development
-
-全パッケージ build
-
-```bash
-pnpm build
-```
-
-特定 package の build
-
-```bash
-pnpm --filter <package> build
-```
-
-例
-
-```bash
-pnpm --filter engine-client build
-```
-
----
-
-# 7. Dependency Management
-
-依存関係の追加は以下のルールに従ってください。
-
-## 全 package で必要な依存
-
-**workspace root に追加**
-
-```bash
-pnpm add <package> -w
-```
-
-例
-
-```bash
-pnpm add typescript -D -w
-```
-
----
-
-## 特定 package のみで使用する依存
-
-対象 package 内で追加します。
-
-```bash
-cd packages/<package>
-
-pnpm add <package>
-```
-
-例
-
-```bash
-cd packages/engine-client
-pnpm add three
-```
-
----
-
-# 8. Versioning
-
-このリポジトリでは **Changesets** を使用してバージョン管理を行います。
-
-変更を加えた場合は changeset を作成してください。
-
-```bash
-pnpm changeset
-```
-
-質問に従って
-
-* 対象 package
-* version bump
-* summary
-
-を入力してください。
-
----
-
-# 9. Release / Publish
-
-main ブランチにマージされると
-GitHub Actions が以下を自動実行します。
-
-* version bump
-* changelog 更新
-* npm publish
-
-通常の変更では **手動 publish は不要です。**
-
----
-
-# 10. 新規 Package の Publish
-
-新しい package を追加した場合は
-**最初の publish のみ手動で行う必要があります。**
-
-```
-cd packages/<new-package>
-pnpm publish --access public
-```
-
-一度 publish されると
-以降のリリースは Changesets workflow が自動で処理します。
-
----
-
-# 11. なぜ Volta を使用するのか
-
-このプロジェクトでは Node / pnpm のバージョン管理に **Volta** を採用しています。
-
-## 自動バージョン切り替え
-
-`package.json` に指定された Node / pnpm のバージョンが
-リポジトリに入るだけで **自動的に適用**されます。
-
-## OS に依存しないツールチェーン
-
-Volta は
-
-* macOS
-* Linux
-* Windows
-
-すべてで同一の動作をします。
-
-## CI / ローカル差異の防止
-
-Node / pnpm のバージョン差異は
-
-* lockfile 不整合
-* install エラー
-* build 失敗
-
-などの原因になります。
-
-Volta によりツールチェーンを固定することで
-**環境差異を最小化できます。**
-
----
-
-# 12. Troubleshooting
-
-## pnpm が Volta 経由にならない
-
-```bash
-which pnpm
-```
-
-が
-
-```
-~/.volta/bin/pnpm
-```
-
-でない場合、PATH を確認してください。
+macOS / Linux の場合は
+`.zshrc` / `.bashrc` に以下を追加してください。
 
 ```bash
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 ```
 
----
-
-## corepack が干渉する
+追加後
 
 ```bash
-corepack disable
+source ~/.zshrc
 ```
+
+などを実行してください。
+
+---
+
+# 2. 依存関係のインストール
+
+**必ずリポジトリ root で実行してください。**
+
+```bash
+pnpm install
+```
+
+## lockfile
+
+`pnpm-lock.yaml` は CI の再現性を保証するための lockfile です。
+依存関係変更で lockfile が更新された場合は **必ず commit してください。**
+
+---
+
+# 3. Workspace 構成
+
+このリポジトリは `pnpm-workspace.yaml` によって workspace package を定義しています。
+
+例
+
+```yaml
+packages:
+  - packages/engine-client
+  - packages/engine-server
+  - packages/plugins-client
+  - packages/plugins-server
+  - packages/plugins-client/src/*
+  - packages/plugins-server/src/*
+```
+
+`src/*` を指定すると、`src` 配下の各ディレクトリがそれぞれ workspace package として認識されます。
+
+例えば
+
+```
+packages/plugins-client/src/
+  bombPlugin/
+  collisionPlugin/
+  mapPlugin/
+```
+
+のような構成の場合、以下のディレクトリが workspace package として扱われます。
+
+```
+packages/plugins-client/src/bombPlugin
+packages/plugins-client/src/collisionPlugin
+packages/plugins-client/src/mapPlugin
+```
+
+`pnpm-workspace.yaml` では `src/*` を指定しているため、  
+`src` 配下に新しい plugin ディレクトリを追加しても自動的に workspace package として認識されます。
+
+そのため、plugin を追加するたびに `pnpm-workspace.yaml` を変更する必要はありません。  
+※ ただし、plugin ディレクトリがさらに深い階層になる場合は `src/**` のようなパターンを追加する必要があります。
+
+---
+
+# 4. 開発フロー
+
+基本的な開発の流れ
+
+```
+実装
+↓
+build
+↓
+必要に応じて changeset 作成
+↓
+PR 作成
+```
+
+## 4.1 build
+
+基本的には root でのフル build を推奨します。
+
+```bash
+pnpm build
+```
+
+理由
+
+* engine package への依存が多いため
+* 部分 build でも依存 build が走るため
+
+## 4.2 clean
+
+dist を削除する場合
+
+```bash
+pnpm clean
+```
+
+## 4.3 依存関係の追加
+
+### 全 package 共通依存
+
+workspace root に追加
+
+```bash
+pnpm add typescript -Dw
+# -D devDependencies
+# -w workspace root
+```
+
+### 特定 package の依存
+
+```bash
+cd packages/<package>
+pnpm add <追加したいpackage>
+```
+
+## 4.4 Changeset の作成
+
+package のソースコードの変更を行った場合、 changeset を作成してください。
+
+```bash
+pnpm changeset
+```
+
+対話形式で以下を指定します。
+
+* 変更対象 package（スペースで選択、複数選択可）
+* version bump 種別
+* summary
+
+### version bump
+
+| type  | 内容          |
+| ----- | ----------- |
+| patch | バグ修正        |
+| minor | 後方互換のある機能追加 |
+| major | 破壊的変更       |
+
+参考
+https://semver.org/lang/ja/
+
+### summary
+
+変更内容の簡単な説明を記述します。  
+この内容は git tag の release notes に使用されます。
+
+changeset を作成すると
+
+```
+.changeset/xxxx.md
+```
+
+のようなファイルが生成されます。  
+このファイルも変更として commit し、PR に含めてください。
+
+---
+
+# 5. Release / Publish の仕組み
+
+このリポジトリでは Changesets + GitHub Actions によって [npm registry](https://www.npmjs.com) への publish を自動化しています。
+
+## リリースフロー
+
+1. 開発者が `pnpm changeset` の実行により `.changeset/xxxx.md` を作成
+2. PR を main に merge
+3. CI が `.changeset/xxxx.md` を検出
+4. version / changelog を更新する Release PR を自動作成
+5. Release PR を merge
+6. publish 実行
+7. git tag および release note を自動作成
+
+## workflow
+
+```
+.github/workflows/publish.yml
+```
+
+この workflow は
+
+* version bump
+* changelog 更新
+* npm publish
+
+を自動で行います。
+
+そのため 通常は手動 publish は不要です。
+
+---
+
+# 6. 新しい Package を追加する場合
+
+1. package ディレクトリ作成
+2. `package.json` 作成
+3. workspace に追加
+
+## workspace protocol
+
+内部依存は `workspace:` を使用します。
+
+例
+
+```
+"engine-client": "workspace:*"
+```
+
+publish 時には実際の version に自動変換されます。
+
+参考：  
+https://pnpm.io/workspaces
+
+---
+
+# 7. 新しい Package の初回 Publish
+
+既存 package は Trusted Publisher により CI から自動 publish されます。  
+ただし **新規 package は初回のみ手動 publish が必要**です。
+
+## 手順
+
+### 1. provenance を一時的に無効化
+
+初回 publish では provenance を有効にするとエラーになります。
+
+一時的に `package.json` を以下のように変更してください。
+
+```json
+"publishConfig": {
+  "access": "public"
+}
+```
+
+### 2. 手動publish
+
+```bash
+cd packages/<package>
+pnpm publish --access public
+```
+
+### 3. npm で Trusted Publisher を設定
+
+publish 後、[npm registry](https://www.npmjs.com) で該当 package を開き、Trusted Publisher を設定してください。
+
+### 4. provenance を元に戻す
+
+設定完了後、`package.json` を以下に戻してください。
+
+```json
+"publishConfig": {
+  "access": "public",
+  "provenance": true
+}
+```
+
+これにより、GitHub Actions から publish された際に provenance（署名付き publish）が有効になります。
+
+## repository 設定
+
+`package.json` に以下を追加してください。
+
+```json
+"repository": {
+  "type": "git",
+  "url": "https://github.com/ORG/REPO.git",
+  "directory": "packages/pkg-name"
+}
+```
+
+## 2FA
+
+pnpm publish には npm アカウントの 2FA が必要です。  
+npmアカウントの運用方法については現在検討中です。
