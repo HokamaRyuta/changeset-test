@@ -39,15 +39,15 @@ jobs:
       - name: List workspace packages
         run: pnpm -r list --depth -1
 
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Show release plan
         run: |
           if ls .changeset/*.md 1> /dev/null 2>&1; then
             echo "🦋 Release plan"
             pnpm changeset status
           fi
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
 
       - name: Build packages
         run: pnpm build
