@@ -155,8 +155,6 @@ pnpm install
 
 このリポジトリは `pnpm-workspace.yaml` によって workspace package を定義しています。
 
-例
-
 ```yaml
 packages:
   - packages/engine-client
@@ -337,7 +335,7 @@ changeset を作成すると
 
 内部依存は `workspace:` を使用します。
 
-例
+例：
 
 ```
 "engine-client": "workspace:*"
