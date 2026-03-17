@@ -32,10 +32,9 @@ jobs:
         with:
           node-version: 20.20.0
           registry-url: https://registry.npmjs.org
-          npm: 11.8.0
 
-      - name: check npm version
-        run: npm -v
+      - name: Update npm
+        run: npm install -g npm@11.8.0
 
       - name: List workspace packages
         run: pnpm -r list --depth -1
