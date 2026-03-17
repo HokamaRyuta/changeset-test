@@ -34,6 +34,9 @@ jobs:
           registry-url: https://registry.npmjs.org
           npm: 11.8.0
 
+      - name: check npm version
+        run: npm -v
+
       - name: List workspace packages
         run: pnpm -r list --depth -1
 
