@@ -1,5 +1,14 @@
 # @e245703/pkg-b
 
+## 2.1.2
+
+### Patch Changes
+
+- 7b394ab: patch
+- Updated dependencies [b6968c1]
+- Updated dependencies [7b394ab]
+  - @e245703/pkg-a@1.2.0
+
 ## 2.1.1
 
 ### Patch Changes
