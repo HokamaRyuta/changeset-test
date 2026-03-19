@@ -1,5 +1,15 @@
 # @e245703/pkg-a
 
+## 1.2.0
+
+### Minor Changes
+
+- b6968c1: minor update
+
+### Patch Changes
+
+- 7b394ab: patch
+
 ## 1.1.0
 
 ### Minor Changes
