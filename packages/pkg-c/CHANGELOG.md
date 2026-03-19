@@ -1,5 +1,12 @@
 # @e245703/pkg-c
 
+## 2.1.1
+
+### Patch Changes
+
+- Updated dependencies [bb856a8]
+  - @e245703/pkg-b@2.1.1
+
 ## 2.1.0
 
 ### Minor Changes
