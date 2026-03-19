@@ -1,5 +1,11 @@
 # @e245703/pkg-b
 
+## 2.1.1
+
+### Patch Changes
+
+- bb856a8: 何かしら変更しました
+
 ## 2.1.0
 
 ### Minor Changes
